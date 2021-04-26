@@ -15,21 +15,20 @@ private:
 
 public:
 	sf::Sprite& getSprite();
+
 	sf::Vector2f getLocation();
-	sf::IntRect getSize();
-	sf::Texture getTexture();
-	void setTexture(sf::Texture& newTexture);
-	void setTexture(std::string textureLocation);
 	void setLocation(sf::Vector2f newLocation);
+	sf::IntRect getSize();
 	void setSize(sf::IntRect newSize);
 
-	void move(float x, float y);
+	sf::Texture getTexture();
+	void setTexture(sf::Texture& newTexture);
+
 	float getMoveDirection();
 	void setMoveDirection(float newDirection);
-
-	void handleInput();
+	void move(float x, float y);
+	void start(float interval);
 
 	Enemy();
 	Enemy(sf::Vector2f location, sf::IntRect size, sf::Texture& texture);
-	Enemy(sf::Vector2f location, sf::IntRect size, std::string textureLocation);
 };
