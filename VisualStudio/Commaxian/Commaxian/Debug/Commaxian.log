@@ -1,2 +1,4 @@
 ﻿  main.cpp
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(92,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(128,20): warning C4018: '<': signed/unsigned mismatch
   Commaxian.vcxproj -> C:\Users\jorda\source\repos\Commaxian\Debug\Commaxian.exe

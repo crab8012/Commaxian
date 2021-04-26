@@ -1,27 +1,35 @@
 #pragma once
-
 #include <SFML/Graphics.hpp>
 
 class Enemy
 {
-	private:
-		sf::Texture texture;
-		sf::Vector2f location;
-		sf::Vector2f size;
-		sf::RectangleShape shape;
+private:
+	sf::Texture texture;
+	sf::Vector2f location;
+	sf::IntRect size;
+	sf::Sprite sprite;
 
-		void updateEnemy();
+	float moveDirection;
 
-	public:
-		sf::RectangleShape getShape();
-		sf::Vector2f getLocation();
-		sf::Vector2f getSize();
-		sf::Texture getTexture();
-		void setTexture(sf::Texture newTexture);
-		void setLocation(sf::Vector2f newLocation);
-		void setSize(sf::Vector2f newSize);
+	void updateEnemy();
 
-		Enemy();
-		Enemy(sf::Vector2f location, sf::Vector2f size, sf::Texture texture);
+public:
+	sf::Sprite& getSprite();
+	sf::Vector2f getLocation();
+	sf::IntRect getSize();
+	sf::Texture getTexture();
+	void setTexture(sf::Texture& newTexture);
+	void setTexture(std::string textureLocation);
+	void setLocation(sf::Vector2f newLocation);
+	void setSize(sf::IntRect newSize);
+
+	void move(float x, float y);
+	float getMoveDirection();
+	void setMoveDirection(float newDirection);
+
+	void handleInput();
+
+	Enemy();
+	Enemy(sf::Vector2f location, sf::IntRect size, sf::Texture& texture);
+	Enemy(sf::Vector2f location, sf::IntRect size, std::string textureLocation);
 };
-
