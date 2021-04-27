@@ -146,6 +146,7 @@ void gameLoop(sf::RenderWindow& window) {
 							//enemies.erase(enemies.begin() + j); // We can erase the enemies
 							enemies[j].getSprite().setPosition(enemyRespawnLocations[rand() % enemyRespawnLocations.size()]); // Or provide infinite gameplay
 							score++; // Add 1 to the score
+							break; // We hit an enemy. No need to continue, so break out of loop
 						}
 					}
 				}
