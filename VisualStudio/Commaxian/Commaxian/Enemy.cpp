@@ -43,10 +43,6 @@ void Enemy::setMoveDirection(float newDirection)
 	this->moveDirection = newDirection;
 }
 
-void Enemy::start(float interval) {
-	// Start the clock, and then if it hits
-}
-
 void Enemy::updateEnemy() {
 	this->sprite.setTextureRect(this->size);
 	this->sprite.setTexture(this->texture);

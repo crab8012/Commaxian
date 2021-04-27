@@ -27,7 +27,6 @@ public:
 	float getMoveDirection();
 	void setMoveDirection(float newDirection);
 	void move(float x, float y);
-	void start(float interval);
 
 	Enemy();
 	Enemy(sf::Vector2f location, sf::IntRect size, sf::Texture& texture);

@@ -13,6 +13,7 @@
 void renderItems(sf::RenderWindow& window);
 void getInput(sf::RenderWindow& window);
 void gameLoop(sf::RenderWindow& window);
+sf::Vector2f gridToScreen(int x, int y);
 
 // Feature support
 bool useShaders = false; // False by default... We don't know if shaders are supported yet
@@ -32,9 +33,6 @@ Player player;
 std::vector<Enemy> enemies;
 Laser laser;
 sf::Thread laserThread(&Laser::fire, &laser); // Setup a thread to launch the laser
-
-std::vector<sf::Vector2f> enemyRespawnLocations = {sf::Vector2f(50, 100), sf::Vector2f(100, 100), 
-												   sf::Vector2f(150, 100), sf::Vector2f(200, 100) }; // Spawn a new enemy in a random position in Enemy Row 1
 
 // UI text
 sf::Text scoreTxt;
@@ -61,7 +59,6 @@ int main() {
 	if (!laserTexture.loadFromFile("res/textures/laser.png"))
 		std::cout << "Error loading Laser texture" << std::endl;
 
-
 	// Load fonts
 	//if (!font.loadFromFile("fonts/arial.ttf"))
 	//	std::cout << "Error loading font arial.ttf" << std::endl;
@@ -71,19 +68,21 @@ int main() {
 	laser = Laser(player.getLocation(), sf::IntRect(0, 0, 8, 32), laserTexture); // We will only have one laser at a time
 
 	// Create player
-	player = Player(sf::Vector2f(100.0f, 435.0f), sf::IntRect(0, 0, 32, 32), texture3);
+	player = Player(gridToScreen(10, 13), sf::IntRect(0, 0, 32, 32), texture3);
 	
 	// Create the Enemies
 	for(int i = 0; i < 10; i++) {
-		Enemy e = Enemy(sf::Vector2f((i*50.0f) + 50.0f, 100.0f), sf::IntRect(0, 0, 32, 32), texture3);
+		Enemy e = Enemy(gridToScreen(i + 2, 2), sf::IntRect(0, 0, 32, 32), texture3);
 		e.getSprite().setColor(sf::Color(40, 10, 30));
 		e.getSprite().setRotation(180.0f);
+		e.setMoveDirection(32.0f);
 		enemies.push_back(e);
 	}
 	for (int i = 0; i < 10; i++) {
-		Enemy e = Enemy(sf::Vector2f((i * 50.0f) + 50.0f, 150.0f), sf::IntRect(0, 0, 32, 32), texture3);
+		Enemy e = Enemy(gridToScreen(i + 2, 4), sf::IntRect(0, 0, 32, 32), texture3);
 		e.getSprite().setColor(sf::Color(40, 10, 30));
 		e.getSprite().setRotation(180.0f);
+		e.setMoveDirection(-32.0f);
 		enemies.push_back(e);
 	}
 
@@ -94,14 +93,14 @@ int main() {
 	scoreTxt.setCharacterSize(25); // px, not pt
 	scoreTxt.setFillColor(sf::Color::White);
 	scoreTxt.setStyle(sf::Text::Italic | sf::Text::Underlined);
-	scoreTxt.setPosition(sf::Vector2f(410, 0));
+	scoreTxt.setPosition(gridToScreen(13, 0));
 	//		The Attribution text
 	attributionTxt.setFont(font);
 	attributionTxt.setString("Font: Sharp Retro by JROB774 on OpenGameArt.org");
 	attributionTxt.setCharacterSize(10); // px, not pt
 	attributionTxt.setFillColor(sf::Color::White);
 	attributionTxt.setStyle(sf::Text::Italic | sf::Text::Underlined);
-	attributionTxt.setPosition(sf::Vector2f(5, 465));
+	attributionTxt.setPosition(gridToScreen(1, 14));
 	//		The Game Over text
 	gameOverTxt.setFont(font);
 	gameOverTxt.setString("GAME OVER");
@@ -144,7 +143,7 @@ void gameLoop(sf::RenderWindow& window) {
 						if (laser.getBoundingBox().intersects(enemies[j].getSprite().getGlobalBounds())) { // If the laser hits an enemy
 							laser.kill();
 							//enemies.erase(enemies.begin() + j); // We can erase the enemies
-							enemies[j].getSprite().setPosition(enemyRespawnLocations[rand() % enemyRespawnLocations.size()]); // Or provide infinite gameplay
+							enemies[j].getSprite().setPosition(gridToScreen(1 + rand() % 18, 2)); // Or provide infinite gameplay
 							score++; // Add 1 to the score
 							break; // We hit an enemy. No need to continue, so break out of loop
 						}
@@ -154,7 +153,7 @@ void gameLoop(sf::RenderWindow& window) {
 
 			sf::Time elapsed = enemyClock.getElapsedTime();
 			// If the clock hits a predetermined interval, move the enemies
-			if (elapsed.asSeconds() >= 0.2f) {
+			if (elapsed.asSeconds() >= 0.1f) {
 				for (int i = 0; i < enemies.size(); i++) {
 					if (enemies[i].getLocation().x >= 630 || enemies[i].getLocation().x <= 10) {
 						enemies[i].setMoveDirection(enemies[i].getMoveDirection() * -1);
@@ -163,7 +162,7 @@ void gameLoop(sf::RenderWindow& window) {
 					enemies[i].move(enemies[i].getMoveDirection(), 0.0f);
 
 					// Game over if the enemy is in the player's row
-					if (enemies[i].getLocation().y >= 450)
+					if (enemies[i].getLocation().y >= player.getSprite().getPosition().y)
 						isGameOver = true;
 				}
 				enemyClock.restart();
@@ -200,6 +199,21 @@ void getInput(sf::RenderWindow& window) {
 	}
 }
 
+sf::Vector2f gridToScreen(int x, int y) {
+	// Makes sure our item is within the screen
+	if (x < 0) // If we are off-screen to the left, put us on-screen
+		x = 0;
+	if (x > 19)
+		x = 19; // If we are off-screen to the right, put us on-screen
+
+	if (y < 0)
+		y = 0; // If we are off-screen to the top, put us on screen
+	if (y > 14)
+		y = 14; // If we are off-screen to the bottom, put us on screen
+
+	return sf::Vector2f(x * 32, y * 32);
+}
+
 // Draw things on the screen
 void renderItems(sf::RenderWindow& window) {
 	// Render with shaders, if supported
@@ -226,7 +240,6 @@ void renderItems(sf::RenderWindow& window) {
 			}
 		}
 	}
-	
 	
 	// These will not be rendered using shaders.
 	scoreTxt.setString("Score: " + std::string(9 - std::to_string(score).length(), '0') + std::to_string(score)); // Update the score text from the score variable
