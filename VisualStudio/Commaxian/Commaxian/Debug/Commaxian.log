@@ -1,15 +1,16 @@
 ﻿  main.cpp
-C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(98,69): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(51,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(111,69): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(98,45): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(111,45): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(144,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(195,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(207,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(157,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(208,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jorda\source\repos\Commaxian\Commaxian\main.cpp(220,22): warning C4018: '<': signed/unsigned mismatch
   Commaxian.vcxproj -> C:\Users\jorda\source\repos\Commaxian\Debug\Commaxian.exe

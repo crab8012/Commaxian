@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include <string>
+#include <ctime>
+#include <stdlib.h>
 
 #include "Enemy.h"
 #include "Player.h"
@@ -30,6 +33,9 @@ std::vector<Enemy> enemies;
 Laser laser;
 sf::Thread laserThread(&Laser::fire, &laser); // Setup a thread to launch the laser
 
+std::vector<sf::Vector2f> enemyRespawnLocations = {sf::Vector2f(50, 100), sf::Vector2f(100, 100), 
+												   sf::Vector2f(150, 100), sf::Vector2f(200, 100) }; // Spawn a new enemy in a random position in Enemy Row 1
+
 // UI text
 sf::Text scoreTxt;
 sf::Text attributionTxt;
@@ -42,6 +48,7 @@ sf::Clock enemyClock; // Used to determine when an enemy updates or moves
 sf::Shader testShader; // The testShader currently does nothing... It's here for future expansion if I have time to learn GLSL
 
 int main() {
+	srand(time(NULL));
 	// Check if features are supported
 	useShaders = sf::Shader::isAvailable(); // Are shaders supported?
 
@@ -67,8 +74,14 @@ int main() {
 	player = Player(sf::Vector2f(100.0f, 435.0f), sf::IntRect(0, 0, 32, 32), texture3);
 	
 	// Create the Enemies
-	for(int i = 0; i < 4; i++) {
-		Enemy e = Enemy(sf::Vector2f((i*100.0f) + 50.0f, 100.0f), sf::IntRect(0, 0, 32, 32), texture3);
+	for(int i = 0; i < 10; i++) {
+		Enemy e = Enemy(sf::Vector2f((i*50.0f) + 50.0f, 100.0f), sf::IntRect(0, 0, 32, 32), texture3);
+		e.getSprite().setColor(sf::Color(40, 10, 30));
+		e.getSprite().setRotation(180.0f);
+		enemies.push_back(e);
+	}
+	for (int i = 0; i < 10; i++) {
+		Enemy e = Enemy(sf::Vector2f((i * 50.0f) + 50.0f, 150.0f), sf::IntRect(0, 0, 32, 32), texture3);
 		e.getSprite().setColor(sf::Color(40, 10, 30));
 		e.getSprite().setRotation(180.0f);
 		enemies.push_back(e);
@@ -127,14 +140,14 @@ void gameLoop(sf::RenderWindow& window) {
 					laser.kill();
 				}
 				else { // Otherwise we still have the laser, and can try to remove the enemies
-					/*for (int j = enemies.size() - 1; j >= 0; j--) {
-						if (laser->getBoundingBox().intersects(enemies[j].getSprite().getGlobalBounds())) { // If the laser hits an enemy
-							delete laser;
-							laser = nullptr;
-							enemies.erase(enemies.begin() + j);
+					for (int j = enemies.size() - 1; j >= 0; j--) {
+						if (laser.getBoundingBox().intersects(enemies[j].getSprite().getGlobalBounds())) { // If the laser hits an enemy
+							laser.kill();
+							//enemies.erase(enemies.begin() + j); // We can erase the enemies
+							enemies[j].getSprite().setPosition(enemyRespawnLocations[rand() % enemyRespawnLocations.size()]); // Or provide infinite gameplay
 							score++; // Add 1 to the score
 						}
-					}*/
+					}
 				}
 			}
 
@@ -215,6 +228,7 @@ void renderItems(sf::RenderWindow& window) {
 	
 	
 	// These will not be rendered using shaders.
+	scoreTxt.setString("Score: " + std::string(9 - std::to_string(score).length(), '0') + std::to_string(score)); // Update the score text from the score variable
 	window.draw(scoreTxt);
 	window.draw(attributionTxt);
 
